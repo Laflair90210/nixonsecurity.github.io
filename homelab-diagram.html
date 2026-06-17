@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cybersecurity Home Lab – Network Diagram</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;600;700;800&display=swap');
+
+    :root {
+      --bg:        #0a0e1a;
+      --surface:   #111827;
+      --border:    #1e2d45;
+      --accent:    #00d4ff;
+      --red:       #ff4d6d;
+      --green:     #00ffa3;
+      --yellow:    #ffd166;
+      --purple:    #c77dff;
+      --text:      #e2e8f0;
+      --muted:     #64748b;
+      --glow-blue: 0 0 18px rgba(0,212,255,0.35);
+      --glow-red:  0 0 18px rgba(255,77,109,0.35);
+      --glow-grn:  0 0 18px rgba(0,255,163,0.25);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      padding: 40px 24px 60px;
+    }
+
+    /* ── Header ────────────────────────────────────── */
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    header .badge {
+      display: inline-block;
+      background: rgba(0,212,255,0.1);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-size: 11px;
+      font-family: 'Share Tech Mono', monospace;
+      letter-spacing: 3px;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+    }
+    header h1 {
+      font-size: clamp(1.6rem, 4vw, 2.8rem);
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.2;
+      margin-bottom: 10px;
+    }
+    header p {
+      color: var(--muted);
+      font-size: 14px;
+      max-width: 520px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* ── Legend ────────────────────────────────────── */
+    .legend {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-bottom: 42px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .legend-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+    }
+
+    /* ── Main grid ──────────────────────────────────── */
+    .diagram {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      align-items: center;
+    }
+
+    /* ── Host machine ───────────────────────────────── */
+    .host-box {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      border-radius: 16px;
+      padding: 18px 24px 24px;
+      box-shadow: var(--glow-blue);
+      position: relative;
+    }
+    .host-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .host-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .host-sub {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .host-specs {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .spec-tag {
+      background: rgba(0,212,255,0.07);
+      border: 1px solid rgba(0,212,255,0.2);
+      color: var(--accent);
+      font-size: 11px;
+      font-family: 'Share Tech Mono', monospace;
+      padding: 3px 10px;
+      border-radius: 6px;
+    }
+
+    /* ── Connector line ─────────────────────────────── */
+    .connector {
+      width: 2px;
+      height: 36px;
+      background: linear-gradient(to bottom, var(--accent), var(--border));
+      position: relative;
+    }
+    .connector::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 0; height: 0;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 8px solid var(--border);
+    }
+
+    /* ── Network switch ─────────────────────────────── */
+    .switch-box {
+      background: rgba(0,212,255,0.06);
+      border: 1px dashed rgba(0,212,255,0.4);
+      border-radius: 10px;
+      padding: 10px 28px;
+      text-align: center;
+    }
+    .switch-box span {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 1px;
+    }
+    .network-label {
+      font-size: 10px;
+      color: var(--muted);
+      display: block;
+      margin-top: 2px;
+    }
+
+    /* ── Branch connectors ──────────────────────────── */
+    .branch-row {
+      width: 100%;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 0;
+      position: relative;
+    }
+
+    /* Horizontal bar connecting all VMs */
+    .h-bar-wrap {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      height: 24px;
+      margin-top: -2px;
+    }
+    .h-bar {
+      position: absolute;
+      height: 2px;
+      background: var(--border);
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .v-drop {
+      width: 2px;
+      height: 24px;
+      background: var(--border);
+      position: absolute;
+      top: 0;
+    }
+
+    /* ── VM Card ────────────────────────────────────── */
+    .vm-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+    }
+
+    .vm-card {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .vm-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      border-radius: 12px 12px 0 0;
+    }
+    .vm-card:hover {
+      transform: translateY(-3px);
+    }
+    /* colour variants */
+    .vm-card.attacker::before  { background: var(--red); }
+    .vm-card.attacker          { border-color: rgba(255,77,109,0.35); box-shadow: var(--glow-red); }
+    .vm-card.target-win::before{ background: var(--accent); }
+    .vm-card.target-win        { border-color: rgba(0,212,255,0.25); }
+    .vm-card.target-lin::before{ background: var(--green); }
+    .vm-card.target-lin        { border-color: rgba(0,255,163,0.25); box-shadow: var(--glow-grn); }
+    .vm-card.dc::before        { background: var(--yellow); }
+    .vm-card.dc                { border-color: rgba(255,209,102,0.35); }
+    .vm-card.vuln::before      { background: var(--purple); }
+    .vm-card.vuln              { border-color: rgba(199,125,255,0.25); }
+
+    .vm-icon { font-size: 26px; margin-bottom: 8px; }
+    .vm-name {
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+    .vm-os {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .vm-ip {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 12px;
+      padding: 3px 8px;
+      border-radius: 5px;
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+    .attacker .vm-ip  { background: rgba(255,77,109,0.15); color: var(--red); }
+    .target-win .vm-ip{ background: rgba(0,212,255,0.1);   color: var(--accent); }
+    .target-lin .vm-ip{ background: rgba(0,255,163,0.1);   color: var(--green); }
+    .dc .vm-ip        { background: rgba(255,209,102,0.1); color: var(--yellow); }
+    .vuln .vm-ip      { background: rgba(199,125,255,0.1); color: var(--purple); }
+
+    .vm-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+    .tag {
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-family: 'Share Tech Mono', monospace;
+      background: rgba(255,255,255,0.05);
+      color: var(--muted);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .attacker  .tag { color: var(--red);    border-color: rgba(255,77,109,0.2); }
+    .target-lin .tag{ color: var(--green);  border-color: rgba(0,255,163,0.2); }
+    .dc        .tag { color: var(--yellow); border-color: rgba(255,209,102,0.2); }
+    .vuln      .tag { color: var(--purple); border-color: rgba(199,125,255,0.2); }
+
+    /* ── Section title ──────────────────────────────── */
+    .section-label {
+      text-align: center;
+      font-size: 10px;
+      font-family: 'Share Tech Mono', monospace;
+      letter-spacing: 2px;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-top: 32px;
+      margin-bottom: 12px;
+      position: relative;
+    }
+    .section-label::before,
+    .section-label::after {
+      content: '';
+      display: inline-block;
+      width: 40px;
+      height: 1px;
+      background: var(--border);
+      vertical-align: middle;
+      margin: 0 12px;
+    }
+
+    /* ── Attack flow ────────────────────────────────── */
+    .flow-section {
+      width: 100%;
+      max-width: 1100px;
+      margin: 40px auto 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+    }
+    .flow-title {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--text);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .flow-steps {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .flow-step {
+      background: rgba(0,212,255,0.07);
+      border: 1px solid rgba(0,212,255,0.2);
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 12px;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .flow-num {
+      font-family: 'Share Tech Mono', monospace;
+      color: var(--accent);
+      font-size: 10px;
+      background: rgba(0,212,255,0.12);
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .flow-arrow {
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    /* ── Skills pills ────────────────────────────────── */
+    .skills-section {
+      width: 100%;
+      max-width: 1100px;
+      margin: 20px auto 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+    }
+    .skills-title {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--text);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .skills-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .skill-pill {
+      background: rgba(199,125,255,0.08);
+      border: 1px solid rgba(199,125,255,0.25);
+      color: var(--purple);
+      font-size: 12px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-family: 'Share Tech Mono', monospace;
+    }
+
+    /* ── Footer ─────────────────────────────────────── */
+    footer {
+      text-align: center;
+      margin-top: 48px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    footer span { color: var(--accent); }
+
+    /* ── Responsive ─────────────────────────────────── */
+    @media (max-width: 600px) {
+      .vm-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 400px) {
+      .vm-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ HEADER ══════════════════════════════════════════ -->
+<header>
+  <div class="badge">&#x1F512; Cybersecurity Home Lab</div>
+  <h1>OSCP-Style Penetration Testing Lab</h1>
+  <p>A fully isolated virtual network environment built to sharpen offensive security skills — reconnaissance, exploitation, privilege escalation, and post-exploitation. <strong style="color:var(--accent)">1 Attack Box &bull; 8 Targets</strong></p>
+</header>
+
+<!-- ══ LEGEND ══════════════════════════════════════════ -->
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div> Attack Machine</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--yellow)"></div> Domain Controller</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div> Windows Target</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div> Linux Target</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div> Vulnerable App Server</div>
+</div>
+
+<!-- ══ DIAGRAM ══════════════════════════════════════════ -->
+<div class="diagram">
+
+  <!-- HOST MACHINE -->
+  <div class="host-box" style="max-width:1100px;">
+    <div class="host-label">&#x1F5A5;  Physical Host</div>
+    <div class="host-title">Windows 11 Workstation &nbsp;&mdash;&nbsp; VirtualBox 7.0 Hypervisor</div>
+    <div class="host-sub">All virtual machines run in complete network isolation via Host-Only Adapter #4</div>
+    <div class="host-specs">
+      <span class="spec-tag">VirtualBox 7.0</span>
+      <span class="spec-tag">Host-Only Adapter #4</span>
+      <span class="spec-tag">DHCP 192.168.1.100 – 200</span>
+      <span class="spec-tag">Isolated – No Internet for Targets</span>
+      <span class="spec-tag">VM Snapshots Enabled</span>
+    </div>
+  </div>
+
+  <!-- CONNECTOR -->
+  <div class="connector"></div>
+
+  <!-- VIRTUAL SWITCH -->
+  <div class="switch-box">
+    <span>&#x1F5A7; &nbsp;Virtual Network Switch</span>
+    <span class="network-label">192.168.1.0 / 24 &nbsp;&bull;&nbsp; Host-Only Network</span>
+  </div>
+
+  <!-- CONNECTOR -->
+  <div class="connector"></div>
+
+  <!-- ── ATTACK SECTION ── -->
+  <div class="section-label">&#x1F5E1; Attack Infrastructure</div>
+  <div class="vm-grid" style="max-width:1100px; grid-template-columns: 1fr;">
+
+    <div class="vm-card attacker">
+      <div class="vm-icon">&#x1F9A0;</div>
+      <div class="vm-name">Kali Linux &mdash; Attack Box</div>
+      <div class="vm-os">Kali Linux Rolling &nbsp;|&nbsp; 64-bit</div>
+      <div class="vm-ip">192.168.1.10</div>
+      <div class="vm-tags">
+        <span class="tag">Nmap</span>
+        <span class="tag">Metasploit</span>
+        <span class="tag">Burp Suite</span>
+        <span class="tag">SQLMap</span>
+        <span class="tag">Hydra</span>
+        <span class="tag">John the Ripper</span>
+        <span class="tag">Hashcat</span>
+        <span class="tag">Gobuster</span>
+        <span class="tag">Nikto</span>
+        <span class="tag">CrackMapExec</span>
+        <span class="tag">Impacket</span>
+        <span class="tag">BloodHound</span>
+        <span class="tag">Wireshark</span>
+        <span class="tag">MSFvenom</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CONNECTOR -->
+  <div class="connector"></div>
+
+  <!-- ── TARGET SECTION ── -->
+  <div class="section-label">&#x1F3AF; Target Infrastructure</div>
+  <div class="vm-grid" style="max-width:1100px;">
+
+    <!-- Domain Controller -->
+    <div class="vm-card dc">
+      <div class="vm-icon">&#x1F3F0;</div>
+      <div class="vm-name">Domain Controller</div>
+      <div class="vm-os">Windows Server 2022</div>
+      <div class="vm-ip">192.168.1.100</div>
+      <div class="vm-tags">
+        <span class="tag">Active Directory</span>
+        <span class="tag">DNS</span>
+        <span class="tag">LDAP</span>
+        <span class="tag">Kerberos</span>
+        <span class="tag">SMB Shares</span>
+        <span class="tag">GPO</span>
+        <span class="tag">HOMELAB.LOCAL</span>
+      </div>
+    </div>
+
+    <!-- Windows 7 -->
+    <div class="vm-card target-win">
+      <div class="vm-icon">&#x1F4BB;</div>
+      <div class="vm-name">OSCP-WIN7</div>
+      <div class="vm-os">Windows 7 SP1 &nbsp;|&nbsp; x64</div>
+      <div class="vm-ip">192.168.1.105</div>
+      <div class="vm-tags">
+        <span class="tag">MS17-010</span>
+        <span class="tag">RDP</span>
+        <span class="tag">SMB</span>
+        <span class="tag">Weak Creds</span>
+        <span class="tag">Unpatched</span>
+      </div>
+    </div>
+
+    <!-- Windows 11 -->
+    <div class="vm-card target-win">
+      <div class="vm-icon">&#x1F4BB;</div>
+      <div class="vm-name">OSCP-WIN11</div>
+      <div class="vm-os">Windows 11 &nbsp;|&nbsp; WinDev2407Eval</div>
+      <div class="vm-ip">192.168.1.107</div>
+      <div class="vm-tags">
+        <span class="tag">Modern Target</span>
+        <span class="tag">RDP</span>
+        <span class="tag">SMB</span>
+        <span class="tag">Defender</span>
+        <span class="tag">Bypass Practice</span>
+      </div>
+    </div>
+
+    <!-- Metasploitable 2 -->
+    <div class="vm-card target-lin">
+      <div class="vm-icon">&#x1F427;</div>
+      <div class="vm-name">Metasploitable 2</div>
+      <div class="vm-os">Ubuntu 8.04 LTS &nbsp;|&nbsp; Linux</div>
+      <div class="vm-ip">192.168.1.201</div>
+      <div class="vm-tags">
+        <span class="tag">SSH</span>
+        <span class="tag">FTP</span>
+        <span class="tag">Telnet</span>
+        <span class="tag">HTTP</span>
+        <span class="tag">MySQL</span>
+        <span class="tag">SMTP</span>
+        <span class="tag">DVWA</span>
+        <span class="tag">vsftpd 2.3.4</span>
+      </div>
+    </div>
+
+    <!-- Metasploitable 3 Win #1 -->
+    <div class="vm-card vuln">
+      <div class="vm-icon">&#x1F6E0;</div>
+      <div class="vm-name">Metasploitable 3 &mdash; #1</div>
+      <div class="vm-os">Windows Server 2008 R2</div>
+      <div class="vm-ip">192.168.1.101</div>
+      <div class="vm-tags">
+        <span class="tag">IIS</span>
+        <span class="tag">MySQL</span>
+        <span class="tag">PHP</span>
+        <span class="tag">ManageEngine</span>
+        <span class="tag">Jenkins</span>
+        <span class="tag">WebDAV</span>
+      </div>
+    </div>
+
+    <!-- Metasploitable 3 Win #2 -->
+    <div class="vm-card vuln">
+      <div class="vm-icon">&#x1F6E0;</div>
+      <div class="vm-name">Metasploitable 3 &mdash; #2</div>
+      <div class="vm-os">Windows Server 2008 R2</div>
+      <div class="vm-ip">192.168.1.102</div>
+      <div class="vm-tags">
+        <span class="tag">FTP</span>
+        <span class="tag">SSH</span>
+        <span class="tag">SMB</span>
+        <span class="tag">File Uploads</span>
+        <span class="tag">Weak Creds</span>
+        <span class="tag">Priv Esc</span>
+      </div>
+    </div>
+
+    <!-- Metasploitable 3 Win #3 -->
+    <div class="vm-card vuln">
+      <div class="vm-icon">&#x1F6E0;</div>
+      <div class="vm-name">Metasploitable 3 &mdash; #3</div>
+      <div class="vm-os">Windows Server 2008 R2</div>
+      <div class="vm-ip">192.168.1.103</div>
+      <div class="vm-tags">
+        <span class="tag">RDP</span>
+        <span class="tag">Web Apps</span>
+        <span class="tag">Buffer Overflow</span>
+        <span class="tag">Unquoted Paths</span>
+        <span class="tag">Outdated Services</span>
+      </div>
+    </div>
+
+    <!-- Database Server -->
+    <div class="vm-card target-win">
+      <div class="vm-icon">&#x1F5C4;</div>
+      <div class="vm-name">Database Server</div>
+      <div class="vm-os">Windows Server 2019 &nbsp;|&nbsp; DB01</div>
+      <div class="vm-ip">192.168.1.150</div>
+      <div class="vm-tags">
+        <span class="tag">SQL Server 2019</span>
+        <span class="tag">IIS</span>
+        <span class="tag">DVWA</span>
+        <span class="tag">SQLi Labs</span>
+        <span class="tag">Northwind DB</span>
+        <span class="tag">Employees DB</span>
+      </div>
+    </div>
+
+  </div>
+
+</div><!-- /diagram -->
+
+<!-- ══ ATTACK FLOW ═══════════════════════════════════════ -->
+<div class="flow-section">
+  <div class="flow-title">&#x26A1; Typical Attack Methodology</div>
+  <div class="flow-steps">
+    <div class="flow-step"><div class="flow-num">1</div>Reconnaissance</div>
+    <div class="flow-arrow">›</div>
+    <div class="flow-step"><div class="flow-num">2</div>Scanning &amp; Enumeration</div>
+    <div class="flow-arrow">›</div>
+    <div class="flow-step"><div class="flow-num">3</div>Vulnerability Analysis</div>
+    <div class="flow-arrow">›</div>
+    <div class="flow-step"><div class="flow-num">4</div>Exploitation</div>
+    <div class="flow-arrow">›</div>
+    <div class="flow-step"><div class="flow-num">5</div>Privilege Escalation</div>
+    <div class="flow-arrow">›</div>
+    <div class="flow-step"><div class="flow-num">6</div>Lateral Movement</div>
+    <div class="flow-arrow">›</div>
+    <div class="flow-step"><div class="flow-num">7</div>Post-Exploitation</div>
+    <div class="flow-arrow">›</div>
+    <div class="flow-step"><div class="flow-num">8</div>Reporting</div>
+  </div>
+</div>
+
+<!-- ══ SKILLS ════════════════════════════════════════════ -->
+<div class="skills-section">
+  <div class="skills-title">&#x1F9E0; Skills Practiced Daily</div>
+  <div class="skills-grid">
+    <span class="skill-pill">Network Scanning</span>
+    <span class="skill-pill">Service Enumeration</span>
+    <span class="skill-pill">SMB Exploitation</span>
+    <span class="skill-pill">Web App Testing</span>
+    <span class="skill-pill">SQL Injection</span>
+    <span class="skill-pill">Buffer Overflow</span>
+    <span class="skill-pill">Password Cracking</span>
+    <span class="skill-pill">Active Directory Attacks</span>
+    <span class="skill-pill">Kerberoasting</span>
+    <span class="skill-pill">Pass-the-Hash</span>
+    <span class="skill-pill">Privilege Escalation</span>
+    <span class="skill-pill">Lateral Movement</span>
+    <span class="skill-pill">Reverse Shells</span>
+    <span class="skill-pill">AV Evasion</span>
+    <span class="skill-pill">Payload Crafting</span>
+    <span class="skill-pill">Pivoting</span>
+    <span class="skill-pill">CTF Challenges</span>
+    <span class="skill-pill">Penetration Testing Reports</span>
+  </div>
+</div>
+
+<!-- ══ FOOTER ════════════════════════════════════════════ -->
+<footer>
+  Built with purpose &mdash; <span>Kali Linux</span> &bull; <span>VirtualBox</span> &bull; <span>Metasploitable</span> &bull; <span>Windows AD</span>
+  <br><br>
+  <span style="color:var(--muted)">Isolated lab &mdash; no production systems affected &mdash; for educational purposes</span>
+</footer>
+
+</body>
+</html>

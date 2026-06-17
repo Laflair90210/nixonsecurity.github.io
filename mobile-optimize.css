@@ -1,0 +1,152 @@
+/* Mobile Optimization Styles */
+
+/* Mobile-specific animation adjustments */
+@media screen and (max-width: 768px) {
+  /* Simplify glitch effects for better mobile performance */
+  .glitch-enhanced::before,
+  .glitch-enhanced::after {
+    animation-duration: 2s; /* Slower animation for better performance */
+  }
+  
+  /* Reduce motion on heavy animations */
+  .digital-rain-container {
+    opacity: 0.4 !important; /* Make it more subtle */
+  }
+  
+  /* Adjust hero section animations */
+  .hero .terminal-text {
+    font-size: 0.8rem;
+    animation-duration: 3s;
+  }
+  
+  /* Simplify project card animations */
+  .project-card::before {
+    animation-duration: 3s;
+  }
+  
+  /* Disable parallax effects on mobile */
+  .parallax-element {
+    transform: none !important;
+    transition: none !important;
+  }
+  
+  /* Simplify security badge on mobile */
+  .security-badge {
+    animation: none;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+  }
+  
+  /* Adjust skill-bar animations for better performance */
+  .skill-progress {
+    transition: width 1s ease-out;
+  }
+  
+  /* Simplify scanner effects */
+  .scanner-line {
+    animation-duration: 4s;
+  }
+  
+  /* Make scroll animations more efficient */
+  .reveal-animation {
+    transition: all 0.6s ease;
+  }
+}
+
+/* Reduced motion preference support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .digital-rain-container,
+  .scanner-effect,
+  .glitch-animation,
+  .animated-cursor {
+    display: none !important;
+  }
+  
+  /* Keep essential animations but make them subtle */
+  .skill-progress {
+    transition: none !important;
+    width: var(--progress-value) !important;
+  }
+}
+
+/* Browser-specific fixes */
+.safari .glitch-enhanced {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.firefox .text-corrupt::before {
+  text-shadow: 1px 1px 1px rgba(0, 255, 0, 0.5);
+  filter: none;
+}
+
+.firefox-fallback {
+  background: rgba(0, 30, 60, 0.7);
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+}
+
+/* Simplified animations for devices that struggled with performance */
+body.reduced-animation-complexity .matrix-animation,
+body.reduced-animation-complexity .glitch-animation {
+  animation-play-state: paused;
+}
+
+body.reduced-animation-complexity .project-card::before {
+  opacity: 0.3;
+  animation: none;
+}
+
+body.reduced-animation-complexity .code-snippet::before {
+  animation: none;
+}
+
+/* Optimized content visibility for better scrolling performance */
+.project-card,
+.skill-category,
+.about-content {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 500px;
+}
+
+/* Image optimization classes */
+.image-optimized {
+  width: 100%;
+  height: auto;
+  aspect-ratio: attr(width) / attr(height);
+}
+
+/* Better touch interaction for mobile */
+@media (hover: none) {
+  .project-card:hover .project-info,
+  .glitch-hover:hover,
+  .btn:hover {
+    transform: none !important;
+  }
+  
+  .project-card.touch-focus .project-info {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .navigation a {
+    padding: 12px 16px; /* Larger touch target */
+  }
+}
+
+/* Fix for devices with notches */
+@supports(padding: max(0px)) {
+  .hero, header {
+    padding-left: max(15px, env(safe-area-inset-left));
+    padding-right: max(15px, env(safe-area-inset-right));
+  }
+  
+  .fixed-header {
+    padding-top: max(0px, env(safe-area-inset-top));
+  }
+}

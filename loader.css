@@ -1,0 +1,200 @@
+/* Enhanced Security-Themed Loading Animation */
+
+.loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  opacity: 1;
+  transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+}
+
+.loader.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.loader-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 80%;
+}
+
+/* Security Scan Animation */
+.security-scan {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 255, 0, 0.5);
+  margin-bottom: 2rem;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+}
+
+.security-scan::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(
+    90deg, 
+    transparent,
+    rgba(0, 255, 0, 0.3),
+    transparent
+  );
+  animation: securityScan 2s linear infinite;
+}
+
+.security-scan-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(rgba(0, 255, 0, 0.2) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 0, 0.2) 1px, transparent 1px);
+  background-size: 10px 10px;
+}
+
+.security-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 50px;
+  color: rgba(0, 255, 0, 0.8);
+}
+
+/* Status messages */
+.scan-status {
+  font-family: 'Courier New', monospace;
+  color: var(--primary-color);
+  text-align: center;
+  width: 100%;
+  min-height: 120px;
+  margin-top: 1rem;
+  position: relative;
+}
+
+.status-message {
+  margin: 5px 0;
+  letter-spacing: 0.5px;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeInUp 0.4s forwards;
+  text-shadow: 0 0 5px rgba(0, 255, 0, 0.7);
+}
+
+.flicker {
+  animation: textFlicker 3s infinite;
+}
+
+.scan-progress {
+  width: 200px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  margin: 10px auto;
+  overflow: hidden;
+}
+
+.scan-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--primary-color), #00ffaa);
+  transition: width 0.2s ease;
+  animation: progressPulse 1.5s infinite;
+}
+
+/* Logo Animation */
+.loader-logo {
+  display: block;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  letter-spacing: 3px;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+  position: relative;
+  text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+  animation: logoGlow 2s infinite alternate;
+}
+
+/* Animations */
+@keyframes securityScan {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(50%); }
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes logoGlow {
+  0% { text-shadow: 0 0 5px rgba(0, 255, 0, 0.5); }
+  100% { text-shadow: 0 0 20px rgba(0, 255, 0, 0.8); }
+}
+
+@keyframes textFlicker {
+  0% { opacity: 1; }
+  3% { opacity: 0.4; }
+  6% { opacity: 1; }
+  9% { opacity: 0.4; }
+  12% { opacity: 1; }
+  60% { opacity: 1; }
+  63% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+@keyframes progressPulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+/* Mobile optimization */
+@media (max-width: 768px) {
+  .security-scan {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .security-icon {
+    font-size: 40px;
+  }
+  
+  .scan-status {
+    min-height: 100px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .security-scan::before {
+    animation: none;
+  }
+  
+  .scan-progress-bar {
+    animation: none;
+    transition: width 1s linear;
+  }
+  
+  .loader-logo {
+    animation: none;
+  }
+}

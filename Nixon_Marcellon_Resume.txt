@@ -1,0 +1,184 @@
+================================================================================
+                           NIXON MARCELLON
+         Red Team Operator | Penetration Tester | Offensive Security Engineer
+================================================================================
+3011 SW 3rd St, Fort Lauderdale, FL 33312
+Email:   nixon_marcellon.offsec@outlook.com
+Website: nixonsecurity.github.io
+LinkedIn: linkedin.com/in/nixonmarcellon
+GitHub:   github.com/nixonmarcellon
+
+Certifications: OSCP+ | OSCP | CompTIA Security+
+Platforms:      HackTheBox: Master Rank (52 Machines) | TryHackMe: Guru Level (185 Rooms)
+================================================================================
+
+PROFESSIONAL SUMMARY
+--------------------------------------------------------------------------------
+Dual-certified OSCP+ and OSCP offensive security professional with a relentless
+attacker mindset and a track record of breaking into systems before the bad guys
+do. I specialize in full-scope red team operations, adversary simulation, and
+penetration testing across enterprise Windows, Linux, Active Directory, and web
+application environments — executing every phase of the attack lifecycle from
+initial reconnaissance to full domain compromise and detailed reporting.
+
+Armed with deep expertise in Cobalt Strike, Metasploit, PowerShell Empire, and
+custom C2 tooling, I design and run multi-stage attack campaigns that mirror
+real-world nation-state and advanced persistent threat actor TTPs. My recon
+arsenal spans Nmap, RustScan, Shodan, Recon-ng, and custom Python pipelines that
+turn attack surface mapping into a precision operation.
+
+With a Master rank on HackTheBox (52 machines pwned) and Guru level on TryHackMe
+(185 rooms completed), I don't just study security — I practice it daily. I hold
+a B.S. in Computer Science from Broward College (GPA 3.5) and back every
+engagement with professional executive and technical reporting that translates
+technical risk into business impact.
+
+================================================================================
+
+EXPERIENCE
+--------------------------------------------------------------------------------
+
+Freelance Penetration Tester & Red Team Consultant         2023 – Present
+Independent Consultant | Remote / South Florida
+
+  - Conducted full-scope red team engagements simulating nation-state TTPs from
+    initial recon through domain compromise for SMB and enterprise clients.
+  - Performed internal and external network penetration tests, web application
+    assessments, and Active Directory attack path analysis using BloodHound
+    and Impacket.
+  - Developed custom Python tooling for automated recon pipelines chaining Nmap,
+    RustScan, Shodan, and theHarvester into structured attack surface reports.
+  - Operated Cobalt Strike Beacon C2 infrastructure with malleable profiles and
+    BOF development to evade EDR solutions during engagements.
+  - Designed and executed social engineering campaigns including spear phishing,
+    vishing (voice pretexting), smishing, and BEC simulations to test human-layer
+    defenses and measure organizational security awareness.
+  - Delivered executive and technical-level reports with CVSS-scored findings,
+    risk-rated remediation guidance, and post-engagement debrief sessions.
+
+--------------------------------------------------------------------------------
+
+Security Researcher & CTF Competitor                       2022 – Present
+HackTheBox & TryHackMe | Remote
+
+  - Achieved Master rank on HackTheBox with 52 machines pwned spanning Windows
+    Active Directory, Linux privilege escalation, binary exploitation, and web
+    application attacks.
+  - Completed 185 rooms on TryHackMe reaching Guru level, including full OSCP
+    preparation and red team operations paths.
+  - Built and documented a multi-segment cybersecurity home lab featuring pfSense
+    firewall, Kali Linux attack VM, Windows Server AD domain, and ELK-based SIEM
+    for detection engineering.
+  - Developed Stealth NMAP — an automated pen testing toolkit with IDS/IPS evasion
+    capabilities using randomized timing, decoy traffic, and fragmented packets.
+
+--------------------------------------------------------------------------------
+
+Python Developer – Secure Applications                     2022 – Present
+Personal & Freelance Projects | Fort Lauderdale, FL
+
+  - Built a Flask-based phishing simulation platform with credential harvesting,
+    email tracking, and campaign analytics for authorized red team engagements.
+  - Developed an async web vulnerability scanner detecting OWASP Top 10 issues
+    with severity-rated HTML report output and CVE cross-referencing.
+  - Wrote production-grade secure Python applications following OWASP best
+    practices: parameterized queries, CSP headers, rate limiting, and encrypted
+    session management.
+
+================================================================================
+
+EDUCATION
+--------------------------------------------------------------------------------
+
+Bachelor of Science — Computer Science                     Graduated with Honors
+Broward College | Fort Lauderdale, Florida
+GPA: 3.5 / 4.0
+
+================================================================================
+
+CERTIFICATIONS
+--------------------------------------------------------------------------------
+
+  [*] OSCP+  — OffSec Certified Professional+       | Offensive Security
+  [*] OSCP   — OffSec Certified Professional         | Offensive Security
+  [*] CompTIA Security+                              | CompTIA
+  [*] Jr Penetration Tester Path                     | TryHackMe
+  [*] Web Application Pentesting & Red Teaming       | TryHackMe
+  [*] Cyber Security 101                             | TryHackMe
+  [*] Pre Security                                   | TryHackMe
+  [*] Web Application Red Teaming                    | TryHackMe
+
+================================================================================
+
+PLATFORM ACHIEVEMENTS
+--------------------------------------------------------------------------------
+
+  HackTheBox
+    Rank:             Master
+    Machines Pwned:   52
+    Focus:            Active Directory, Linux PrivEsc, Binary Exploitation, Web
+
+  TryHackMe
+    Level:            Guru
+    Rooms Completed:  185
+    Challenges Pwned: 26
+    Paths:            Jr Pen Tester, OSCP Prep, Web App Red Teaming
+
+================================================================================
+
+TECHNICAL SKILLS
+--------------------------------------------------------------------------------
+
+  Offensive Security Tools:
+    Cobalt Strike, Metasploit Framework, PowerShell Empire, Sliver, Havoc C2,
+    Mimikatz, BloodHound / SharpHound, Impacket Suite, CrackMapExec,
+    Responder, Evil-WinRM, Covenant, Veil Framework, MSFvenom
+
+  Social Engineering:
+    Spear Phishing (credential harvesting, malicious macro delivery),
+    Vishing (voice-based pretexting), Smishing (SMS-based lure campaigns),
+    Business Email Compromise (BEC) simulation, Pretexting & Impersonation,
+    USB Drop Attacks, Watering Hole Campaigns, GoPhish / Evilginx2
+
+  Reconnaissance:
+    Nmap, RustScan, Shodan, Recon-ng, theHarvester, Amass, Gobuster
+
+  Web Application Testing:
+    Burp Suite Pro, SQLmap, Nuclei, ffuf, Nikto
+
+  Programming & Development:
+    Python, C, C++, Bash, PowerShell, Flask, Django, JavaScript, HTML, CSS
+
+  Frameworks & Methodologies:
+    MITRE ATT&CK, OWASP Top 10, PTES, OPSEC, EDR Bypass, AD Attacks
+
+  Operating Systems:
+    Kali Linux, Parrot OS, Windows Server, Ubuntu
+
+================================================================================
+
+NOTABLE PROJECTS
+--------------------------------------------------------------------------------
+
+  Cybersecurity Home Lab
+    Multi-segment virtualized lab environment with pfSense firewall, Kali Linux,
+    Windows Server 2019 AD domain, and ELK SIEM stack. Used for red team
+    simulation, detection engineering, and OSCP preparation.
+
+  Stealth NMAP – Automated Penetration Testing Tool
+    Python-powered automated pen testing toolkit with stealth scanning
+    capabilities: randomized timing, decoy traffic, fragmented packets, and idle
+    zombie scanning to evade IDS/IPS. Generates structured HTML/JSON reports.
+
+  AutoRecon Pipeline
+    Automated reconnaissance pipeline chaining Nmap, RustScan, Shodan, and
+    theHarvester into a unified workflow with structured attack surface reports.
+
+  Custom C2 Framework
+    Lightweight Python Command & Control framework with encrypted Beacon
+    communications, malleable C2 profiles, and automated post-exploitation
+    modules designed to evade modern EDR solutions.
+
+================================================================================
+  References available upon request.
+================================================================================

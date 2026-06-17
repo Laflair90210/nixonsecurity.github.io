@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nixon Marcellon – Resume</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --accent:   #0057b8;
+      --accent2:  #003d82;
+      --dark:     #1a1a2e;
+      --text:     #1e293b;
+      --muted:    #64748b;
+      --border:   #e2e8f0;
+      --bg:       #f8fafc;
+      --white:    #ffffff;
+      --green:    #16a34a;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    /* ── Print button (hidden on print) ── */
+    .print-bar {
+      background: var(--dark);
+      padding: 10px 40px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      align-items: center;
+    }
+    .print-bar span { color: #94a3b8; font-size: 13px; }
+    .btn-print {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 8px 22px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      transition: background 0.2s;
+    }
+    .btn-print:hover { background: var(--accent2); }
+
+    /* ── Page wrapper ── */
+    .page {
+      max-width: 860px;
+      margin: 24px auto 60px;
+      background: var(--white);
+      box-shadow: 0 4px 32px rgba(0,0,0,0.1);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    /* ── Header / Hero ── */
+    .resume-header {
+      background: linear-gradient(135deg, #0a1628 0%, #0d2347 50%, #0a1628 100%);
+      padding: 44px 48px 36px;
+      position: relative;
+      overflow: hidden;
+    }
+    .resume-header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 90% 50%, rgba(0,87,184,0.25) 0%, transparent 70%);
+    }
+    .header-inner { position: relative; z-index: 1; }
+    .header-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 20px; }
+
+    .name-block h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+    }
+    .name-block .title-line {
+      font-size: 1rem;
+      color: #60a5fa;
+      font-weight: 500;
+      margin-top: 6px;
+      letter-spacing: 0.3px;
+    }
+    .name-block .title-line span {
+      color: #93c5fd;
+    }
+
+    .contact-block {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      align-items: flex-end;
+    }
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #cbd5e1;
+      font-size: 0.82rem;
+    }
+    .contact-item i { color: #60a5fa; width: 14px; text-align: center; }
+    .contact-item a { color: #93c5fd; text-decoration: none; }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 22px;
+    }
+    .h-tag {
+      background: rgba(96,165,250,0.12);
+      border: 1px solid rgba(96,165,250,0.3);
+      color: #93c5fd;
+      font-size: 0.72rem;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── Body layout ── */
+    .resume-body {
+      display: grid;
+      grid-template-columns: 1fr 260px;
+      gap: 0;
+    }
+
+    /* ── Main column ── */
+    .main-col { padding: 36px 40px; border-right: 1px solid var(--border); }
+
+    /* ── Sidebar ── */
+    .side-col { padding: 36px 28px; background: #f1f5f9; }
+
+    /* ── Section styles ── */
+    .section { margin-bottom: 34px; }
+    .section:last-child { margin-bottom: 0; }
+
+    .sec-title {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 6px;
+      margin-bottom: 18px;
+    }
+
+    /* ── Summary ── */
+    .summary p {
+      color: var(--text);
+      font-size: 0.88rem;
+      line-height: 1.75;
+    }
+
+    /* ── Experience / Education entries ── */
+    .entry { margin-bottom: 24px; }
+    .entry:last-child { margin-bottom: 0; }
+
+    .entry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-bottom: 3px;
+    }
+    .entry-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--dark);
+    }
+    .entry-date {
+      font-size: 0.75rem;
+      color: var(--muted);
+      white-space: nowrap;
+      padding-top: 2px;
+    }
+    .entry-sub {
+      font-size: 0.82rem;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .entry-sub .location {
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    .bullet-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .bullet-list li {
+      font-size: 0.83rem;
+      color: #334155;
+      padding-left: 16px;
+      position: relative;
+      line-height: 1.6;
+    }
+    .bullet-list li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-size: 0.75rem;
+      top: 2px;
+    }
+
+    /* ── Certs in main ── */
+    .cert-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border);
+      gap: 10px;
+    }
+    .cert-row:last-child { border-bottom: none; }
+    .cert-row-left { display: flex; align-items: center; gap: 10px; }
+    .cert-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+    .cert-row-name { font-size: 0.85rem; font-weight: 600; color: var(--dark); }
+    .cert-row-issuer { font-size: 0.75rem; color: var(--muted); }
+    .cert-row-badge {
+      font-size: 0.68rem;
+      background: #dbeafe;
+      color: var(--accent);
+      border: 1px solid #bfdbfe;
+      padding: 2px 9px;
+      border-radius: 10px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .cert-row-badge.gold {
+      background: #fef9c3;
+      color: #92400e;
+      border-color: #fde68a;
+    }
+
+    /* ── Sidebar skills ── */
+    .skill-group { margin-bottom: 22px; }
+    .skill-group:last-child { margin-bottom: 0; }
+    .skill-group-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .skill-tag-wrap { display: flex; flex-wrap: wrap; gap: 6px; }
+    .sk-tag {
+      background: #e0f2fe;
+      color: #0369a1;
+      font-size: 0.72rem;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-weight: 500;
+    }
+    .sk-tag.red { background: #fee2e2; color: #b91c1c; }
+    .sk-tag.purple { background: #ede9fe; color: #6d28d9; }
+    .sk-tag.green { background: #dcfce7; color: #15803d; }
+    .sk-tag.gray { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+
+    /* ── Platform stats sidebar ── */
+    .platform-stat-item {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+    }
+    .platform-stat-item:last-child { margin-bottom: 0; }
+    .pstat-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .pstat-icon { font-size: 1rem; }
+    .pstat-name { font-weight: 700; font-size: 0.85rem; color: var(--dark); }
+    .pstat-row { display: flex; justify-content: space-between; font-size: 0.78rem; margin-bottom: 4px; }
+    .pstat-row:last-child { margin-bottom: 0; }
+    .pstat-label { color: var(--muted); }
+    .pstat-val { font-weight: 700; color: var(--accent); }
+    .htb-color { color: #9fef00 !important; }
+    .thm-color { color: #88cc00 !important; }
+
+    /* ── Education sidebar entry ── */
+    .edu-item { margin-bottom: 18px; }
+    .edu-item:last-child { margin-bottom: 0; }
+    .edu-degree { font-size: 0.85rem; font-weight: 700; color: var(--dark); }
+    .edu-school { font-size: 0.8rem; color: var(--accent); font-weight: 600; margin-top: 2px; }
+    .edu-detail { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+    .gpa-badge {
+      display: inline-block;
+      margin-top: 6px;
+      background: #dcfce7;
+      color: #15803d;
+      border: 1px solid #bbf7d0;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 9px;
+      border-radius: 8px;
+    }
+
+    /* ── Footer ── */
+    .resume-footer {
+      background: var(--dark);
+      padding: 14px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .resume-footer span { color: #475569; font-size: 0.75rem; }
+    .resume-footer a { color: #60a5fa; text-decoration: none; font-size: 0.75rem; }
+
+    /* ── Print styles ── */
+    @media print {
+      .print-bar { display: none !important; }
+      body { background: white; font-size: 12px; }
+      .page { box-shadow: none; margin: 0; border-radius: 0; max-width: 100%; }
+      .resume-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .side-col { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+
+    @media (max-width: 700px) {
+      .resume-body { grid-template-columns: 1fr; }
+      .side-col { border-top: 1px solid var(--border); }
+      .main-col { padding: 28px 24px; }
+      .side-col { padding: 28px 24px; }
+      .resume-header { padding: 32px 24px 28px; }
+      .header-top { flex-direction: column; }
+      .contact-block { align-items: flex-start; }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- Print bar -->
+  <div class="print-bar">
+    <span>Nixon Marcellon — Resume</span>
+    <button class="btn-print" onclick="window.print()">
+      <i class="fas fa-print"></i> Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="page">
+
+    <!-- ── Header ── -->
+    <header class="resume-header">
+      <div class="header-inner">
+        <div class="header-top">
+          <div class="name-block">
+            <h1>Nixon Marcellon</h1>
+            <div class="title-line">Red Team Operator &amp; Penetration Tester <span>| Offensive Security Engineer</span></div>
+          </div>
+          <div class="contact-block">
+            <div class="contact-item"><i class="fas fa-map-marker-alt"></i> 3011 SW 3rd St, Fort Lauderdale, FL 33312</div>
+            <div class="contact-item"><i class="fas fa-envelope"></i> <a href="mailto:nixon_marcellon.offsec@outlook.com">nixon_marcellon.offsec@outlook.com</a></div>
+            <div class="contact-item"><i class="fas fa-globe"></i> <a href="https://nixonsecurity.github.io" target="_blank">nixonsecurity.github.io</a></div>
+            <div class="contact-item"><i class="fab fa-linkedin-in"></i> <a href="#">linkedin.com/in/nixonmarcellon</a></div>
+            <div class="contact-item"><i class="fab fa-github"></i> <a href="#">github.com/nixonmarcellon</a></div>
+          </div>
+        </div>
+        <div class="tag-row">
+          <span class="h-tag">OSCP+</span>
+          <span class="h-tag">OSCP</span>
+          <span class="h-tag">CompTIA Security+</span>
+          <span class="h-tag">Red Team Ops</span>
+          <span class="h-tag">Penetration Testing</span>
+          <span class="h-tag">Python Development</span>
+          <span class="h-tag">HTB: Master</span>
+          <span class="h-tag">THM: Guru</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="resume-body">
+
+      <!-- ══ MAIN COLUMN ══ -->
+      <div class="main-col">
+
+        <!-- Professional Summary -->
+        <div class="section summary">
+          <div class="sec-title">Professional Summary</div>
+          <p>
+            Dual-certified <strong>OSCP+</strong> and <strong>OSCP</strong> offensive security professional with a relentless attacker mindset and a track record of breaking into systems before the bad guys do. I specialize in full-scope red team operations, adversary simulation, and penetration testing across enterprise Windows, Linux, Active Directory, and web application environments — executing every phase of the attack lifecycle from initial reconnaissance to full domain compromise and detailed reporting.
+          </p>
+          <p style="margin-top:10px;">
+            Armed with deep expertise in <strong>Cobalt Strike</strong>, <strong>Metasploit</strong>, <strong>PowerShell Empire</strong>, and custom C2 tooling, I design and run multi-stage attack campaigns that mirror real-world nation-state and APT TTPs. My recon arsenal spans <strong>Nmap</strong>, <strong>RustScan</strong>, <strong>Shodan</strong>, <strong>Recon-ng</strong>, and custom Python pipelines that turn attack surface mapping into a precision operation. With a <strong>Master rank on HackTheBox</strong> (52 machines pwned) and <strong>Guru level on TryHackMe</strong> (185 rooms), I back every engagement with professional executive and technical reporting that translates technical risk into clear business impact.
+          </p>
+        </div>
+
+        <!-- Experience -->
+        <div class="section">
+          <div class="sec-title">Experience</div>
+
+          <div class="entry">
+            <div class="entry-header">
+              <div class="entry-title">Freelance Penetration Tester &amp; Red Team Consultant</div>
+              <div class="entry-date">2023 – Present</div>
+            </div>
+            <div class="entry-sub">Independent Consultant <span class="location">— Remote / South Florida</span></div>
+            <ul class="bullet-list">
+              <li>Conducted full-scope red team engagements simulating nation-state TTPs from initial recon through domain compromise for SMB and enterprise clients.</li>
+              <li>Performed internal and external network penetration tests, web application assessments, and Active Directory attack path analysis using BloodHound and Impacket.</li>
+              <li>Developed custom Python tooling for automated recon pipelines chaining Nmap, RustScan, Shodan, and theHarvester into structured attack surface reports.</li>
+              <li>Operated Cobalt Strike Beacon C2 infrastructure with malleable profiles and BOF development to evade EDR solutions during engagements.</li>
+              <li>Designed and executed social engineering campaigns including <strong>spear phishing</strong>, <strong>vishing</strong> (voice pretexting), <strong>smishing</strong>, and <strong>BEC simulations</strong> — testing human-layer defenses and measuring organizational security awareness at scale.</li>
+              <li>Delivered executive and technical-level reports with CVSS-scored findings, risk-rated remediation guidance, and post-engagement debrief sessions.</li>
+            </ul>
+          </div>
+
+          <div class="entry">
+            <div class="entry-header">
+              <div class="entry-title">Security Researcher &amp; CTF Competitor</div>
+              <div class="entry-date">2022 – Present</div>
+            </div>
+            <div class="entry-sub">HackTheBox &amp; TryHackMe <span class="location">— Remote</span></div>
+            <ul class="bullet-list">
+              <li>Achieved <strong>Master rank</strong> on HackTheBox with 52 machines pwned spanning Windows Active Directory, Linux privilege escalation, binary exploitation, and web application attacks.</li>
+              <li>Completed <strong>185 rooms</strong> on TryHackMe reaching <strong>Guru level</strong>, including full OSCP preparation and red team operations paths.</li>
+              <li>Built and documented a multi-segment cybersecurity home lab featuring pfSense firewall, Kali Linux attack VM, Windows Server AD domain, and ELK-based SIEM for detection engineering.</li>
+              <li>Developed Stealth NMAP — an automated pen testing toolkit with IDS/IPS evasion capabilities using randomized timing, decoy traffic, and fragmented packet techniques.</li>
+            </ul>
+          </div>
+
+          <div class="entry">
+            <div class="entry-header">
+              <div class="entry-title">Python Developer – Secure Applications</div>
+              <div class="entry-date">2022 – Present</div>
+            </div>
+            <div class="entry-sub">Personal &amp; Freelance Projects <span class="location">— Fort Lauderdale, FL</span></div>
+            <ul class="bullet-list">
+              <li>Built a Flask-based phishing simulation platform with credential harvesting, email tracking, and campaign analytics — used for authorized red team social engineering engagements.</li>
+              <li>Developed an async web vulnerability scanner detecting OWASP Top 10 issues with severity-rated HTML report output and CVE cross-referencing.</li>
+              <li>Wrote production-grade secure Python applications following OWASP best practices: parameterized queries, CSP headers, rate limiting, and encrypted session management.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Certifications -->
+        <div class="section">
+          <div class="sec-title">Certifications</div>
+
+          <div class="cert-row">
+            <div class="cert-row-left">
+              <div class="cert-dot"></div>
+              <div>
+                <div class="cert-row-name">OSCP+ — OffSec Certified Professional+</div>
+                <div class="cert-row-issuer">Offensive Security</div>
+              </div>
+            </div>
+            <span class="cert-row-badge gold">Advanced</span>
+          </div>
+
+          <div class="cert-row">
+            <div class="cert-row-left">
+              <div class="cert-dot"></div>
+              <div>
+                <div class="cert-row-name">OSCP — OffSec Certified Professional</div>
+                <div class="cert-row-issuer">Offensive Security</div>
+              </div>
+            </div>
+            <span class="cert-row-badge gold">Industry Standard</span>
+          </div>
+
+          <div class="cert-row">
+            <div class="cert-row-left">
+              <div class="cert-dot"></div>
+              <div>
+                <div class="cert-row-name">CompTIA Security+</div>
+                <div class="cert-row-issuer">CompTIA</div>
+              </div>
+            </div>
+            <span class="cert-row-badge">Vendor Neutral</span>
+          </div>
+
+          <div class="cert-row">
+            <div class="cert-row-left">
+              <div class="cert-dot"></div>
+              <div>
+                <div class="cert-row-name">Jr Penetration Tester Path</div>
+                <div class="cert-row-issuer">TryHackMe</div>
+              </div>
+            </div>
+            <span class="cert-row-badge">Completed</span>
+          </div>
+
+          <div class="cert-row">
+            <div class="cert-row-left">
+              <div class="cert-dot"></div>
+              <div>
+                <div class="cert-row-name">Web Application Pentesting</div>
+                <div class="cert-row-issuer">TryHackMe</div>
+              </div>
+            </div>
+            <span class="cert-row-badge">Completed</span>
+          </div>
+
+          <div class="cert-row">
+            <div class="cert-row-left">
+              <div class="cert-dot"></div>
+              <div>
+                <div class="cert-row-name">Web Application Red Teaming</div>
+                <div class="cert-row-issuer">TryHackMe</div>
+              </div>
+            </div>
+            <span class="cert-row-badge">Completed</span>
+          </div>
+
+          <div class="cert-row">
+            <div class="cert-row-left">
+              <div class="cert-dot"></div>
+              <div>
+                <div class="cert-row-name">Cyber Security 101</div>
+                <div class="cert-row-issuer">TryHackMe</div>
+              </div>
+            </div>
+            <span class="cert-row-badge">Completed</span>
+          </div>
+
+          <div class="cert-row">
+            <div class="cert-row-left">
+              <div class="cert-dot"></div>
+              <div>
+                <div class="cert-row-name">Pre Security</div>
+                <div class="cert-row-issuer">TryHackMe</div>
+              </div>
+            </div>
+            <span class="cert-row-badge">Completed</span>
+          </div>
+        </div>
+
+      </div><!-- /main-col -->
+
+      <!-- ══ SIDEBAR ══ -->
+      <div class="side-col">
+
+        <!-- Education -->
+        <div class="section">
+          <div class="sec-title">Education</div>
+          <div class="edu-item">
+            <div class="edu-degree">Bachelor of Science — Computer Science</div>
+            <div class="edu-school">Broward College</div>
+            <div class="edu-detail">Fort Lauderdale, Florida</div>
+            <div class="edu-detail">Graduated with Honors</div>
+            <span class="gpa-badge">GPA: 3.5 / 4.0</span>
+          </div>
+        </div>
+
+        <!-- Platform Achievements -->
+        <div class="section">
+          <div class="sec-title">Platform Achievements</div>
+
+          <div class="platform-stat-item">
+            <div class="pstat-header">
+              <span class="pstat-icon">⬡</span>
+              <span class="pstat-name">HackTheBox</span>
+            </div>
+            <div class="pstat-row">
+              <span class="pstat-label">Rank</span>
+              <span class="pstat-val htb-color">Master</span>
+            </div>
+            <div class="pstat-row">
+              <span class="pstat-label">Machines Pwned</span>
+              <span class="pstat-val">52</span>
+            </div>
+          </div>
+
+          <div class="platform-stat-item">
+            <div class="pstat-header">
+              <span class="pstat-icon">🚩</span>
+              <span class="pstat-name">TryHackMe</span>
+            </div>
+            <div class="pstat-row">
+              <span class="pstat-label">Level</span>
+              <span class="pstat-val thm-color">Guru</span>
+            </div>
+            <div class="pstat-row">
+              <span class="pstat-label">Rooms Completed</span>
+              <span class="pstat-val">185</span>
+            </div>
+            <div class="pstat-row">
+              <span class="pstat-label">Challenges Pwned</span>
+              <span class="pstat-val">26</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Technical Skills -->
+        <div class="section">
+          <div class="sec-title">Technical Skills</div>
+
+          <div class="skill-group">
+            <div class="skill-group-title">Social Engineering</div>
+            <div class="skill-tag-wrap">
+              <span class="sk-tag red">Spear Phishing</span>
+              <span class="sk-tag red">Vishing</span>
+              <span class="sk-tag red">Smishing</span>       
+              <span class="sk-tag red">Pretexting</span>
+              <span class="sk-tag red">GoPhish</span>
+              <span class="sk-tag red">Evilginx2</span>
+            </div>
+          </div>
+
+          <div class="skill-group">
+            <div class="skill-group-title">Offensive Security</div>
+            <div class="skill-tag-wrap">
+              <span class="sk-tag red">Cobalt Strike</span>
+              <span class="sk-tag red">Metasploit</span>
+              <span class="sk-tag red">PowerShell Empire</span>
+              <span class="sk-tag red">Sliver</span>
+              <span class="sk-tag red">Havoc C2</span>
+              <span class="sk-tag red">Covenant</span>
+              <span class="sk-tag red">Mimikatz</span>
+              <span class="sk-tag red">BloodHound</span>
+              <span class="sk-tag red">Impacket</span>
+              <span class="sk-tag red">CrackMapExec</span>
+              <span class="sk-tag red">Responder</span>
+              <span class="sk-tag red">Evil-WinRM</span>
+              <span class="sk-tag red">MSFvenom</span>
+              <span class="sk-tag red">Veil Framework</span>
+            </div>
+          </div>
+
+          <div class="skill-group">
+            <div class="skill-group-title">Reconnaissance</div>
+            <div class="skill-tag-wrap">
+              <span class="sk-tag">Nmap</span>
+              <span class="sk-tag">RustScan</span>
+              <span class="sk-tag">Shodan</span>
+              <span class="sk-tag">Recon-ng</span>
+              <span class="sk-tag">theHarvester</span>
+              <span class="sk-tag">Amass</span>
+              <span class="sk-tag">Gobuster</span>
+            </div>
+          </div>
+
+          <div class="skill-group">
+            <div class="skill-group-title">Web Application</div>
+            <div class="skill-tag-wrap">
+              <span class="sk-tag purple">Burp Suite Pro</span>
+              <span class="sk-tag purple">SQLmap</span>
+              <span class="sk-tag purple">Nuclei</span>
+              <span class="sk-tag purple">ffuf</span>
+              <span class="sk-tag purple">Nikto</span>
+            </div>
+          </div>
+
+          <div class="skill-group">
+            <div class="skill-group-title">Development</div>
+            <div class="skill-tag-wrap">
+              <span class="sk-tag green">Python</span>
+              <span class="sk-tag green">C</span>
+              <span class="sk-tag green">C++</span>
+              <span class="sk-tag green">Flask</span>
+              <span class="sk-tag green">Django</span>
+              <span class="sk-tag green">Bash</span>
+              <span class="sk-tag green">PowerShell</span>
+              <span class="sk-tag green">HTML/CSS/JS</span>
+            </div>
+          </div>
+
+          <div class="skill-group">
+            <div class="skill-group-title">Frameworks &amp; Methods</div>
+            <div class="skill-tag-wrap">
+              <span class="sk-tag gray">MITRE ATT&amp;CK</span>
+              <span class="sk-tag gray">OWASP Top 10</span>
+              <span class="sk-tag gray">PTES</span>
+              <span class="sk-tag gray">OPSEC</span>
+              <span class="sk-tag gray">EDR Bypass</span>
+              <span class="sk-tag gray">AD Attacks</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Languages -->
+        <div class="section">
+          <div class="sec-title">Languages</div>
+          <div class="skill-tag-wrap">
+            <span class="sk-tag green">English — Fluent</span>
+          </div>
+        </div>
+
+      </div><!-- /side-col -->
+
+    </div><!-- /resume-body -->
+
+    <!-- Footer -->
+    <div class="resume-footer">
+      <span>Nixon Marcellon &mdash; Fort Lauderdale, FL 33312</span>
+      <a href="certs/OSCP+_cert.pdf" target="_blank"><i class="fas fa-certificate"></i> View OSCP+ Certificate</a>
+      <a href="certs/OSCP_cert.pdf" target="_blank"><i class="fas fa-certificate"></i> View OSCP Certificate</a>
+    </div>
+
+  </div><!-- /page -->
+
+</body>
+</html>

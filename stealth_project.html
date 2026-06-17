@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stealth NMAP – Automated Penetration Testing Tool</title>
+  <style>
+    /* ── Base ────────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0a0d14;
+      --surface:   #111827;
+      --surface2:  #1a2235;
+      --border:    #1f2d44;
+      --accent:    #00d4ff;
+      --accent2:   #7c3aed;
+      --red:       #ef4444;
+      --green:     #22c55e;
+      --yellow:    #f59e0b;
+      --text:      #e2e8f0;
+      --muted:     #64748b;
+      --radius:    10px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Layout helpers ──────────────────────────────────────────── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+    .section    { padding: 72px 0; }
+    .section + .section { border-top: 1px solid var(--border); }
+
+    h2.section-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+    h2.section-title span { color: var(--accent); }
+
+    .section-sub {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 40px;
+    }
+
+    /* ── Hero ────────────────────────────────────────────────────── */
+    .hero {
+      background: linear-gradient(135deg, #0a0d14 0%, #0f1a2e 50%, #0a0d14 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 90px 0 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 80% 50%, rgba(0,212,255,.06) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(124,58,237,.07) 0%, transparent 70%);
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,212,255,.1);
+      border: 1px solid rgba(0,212,255,.3);
+      border-radius: 99px;
+      padding: 5px 14px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 28px;
+    }
+
+    .hero-badge::before {
+      content: '';
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: .5; transform: scale(1.4); }
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      line-height: 1.15;
+      color: #fff;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 span { color: var(--accent); }
+
+    .hero-desc {
+      font-size: 1.05rem;
+      color: #94a3b8;
+      max-width: 640px;
+      margin-bottom: 36px;
+    }
+
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 44px;
+    }
+
+    .tag {
+      padding: 5px 14px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: .04em;
+      border: 1px solid;
+    }
+
+    .tag-blue   { background: rgba(0,212,255,.08);  border-color: rgba(0,212,255,.3);  color: var(--accent); }
+    .tag-purple { background: rgba(124,58,237,.08); border-color: rgba(124,58,237,.35); color: #a78bfa; }
+    .tag-red    { background: rgba(239,68,68,.08);  border-color: rgba(239,68,68,.3);  color: #f87171; }
+    .tag-green  { background: rgba(34,197,94,.08);  border-color: rgba(34,197,94,.3);  color: #4ade80; }
+    .tag-yellow { background: rgba(245,158,11,.08); border-color: rgba(245,158,11,.3); color: #fbbf24; }
+
+    .hero-stats {
+      display: flex;
+      gap: 36px;
+      flex-wrap: wrap;
+    }
+
+    .stat-item { display: flex; flex-direction: column; gap: 2px; }
+
+    .stat-num {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .stat-label { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+
+    /* ── Terminal block ──────────────────────────────────────────── */
+    .terminal {
+      background: #0d1117;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      font-family: 'Consolas', 'Courier New', monospace;
+    }
+
+    .terminal-bar {
+      background: #161b22;
+      border-bottom: 1px solid var(--border);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot-red    { background: #ff5f57; }
+    .dot-yellow { background: #ffbd2e; }
+    .dot-green  { background: #28c840; }
+
+    .terminal-title { margin-left: 8px; font-size: 0.78rem; color: var(--muted); }
+
+    .terminal-body { padding: 20px 22px; font-size: 0.85rem; line-height: 1.7; overflow-x: auto; }
+
+    .t-prompt { color: var(--green); }
+    .t-cmd    { color: #e2e8f0; }
+    .t-flag   { color: var(--accent); }
+    .t-comment{ color: var(--muted); }
+    .t-output { color: #94a3b8; }
+    .t-warn   { color: var(--yellow); }
+    .t-success{ color: var(--green); }
+    .t-critical{ color: var(--red); font-weight: 700; }
+
+    /* ── Feature grid ────────────────────────────────────────────── */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 26px;
+      transition: border-color .2s, transform .2s;
+    }
+
+    .feature-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .feature-icon {
+      font-size: 1.6rem;
+      margin-bottom: 14px;
+    }
+
+    .feature-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .feature-card p { font-size: 0.88rem; color: #94a3b8; }
+
+    /* ── Scan mode table ─────────────────────────────────────────── */
+    .mode-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .mode-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+    }
+
+    .mode-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .mode-name { font-weight: 700; font-size: 0.95rem; color: #fff; }
+
+    .badge {
+      padding: 2px 10px;
+      border-radius: 99px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    .badge-fast    { background: rgba(34,197,94,.15);  color: var(--green); }
+    .badge-stealth { background: rgba(124,58,237,.15); color: #a78bfa; }
+    .badge-full    { background: rgba(0,212,255,.12);  color: var(--accent); }
+    .badge-default { background: rgba(100,116,139,.15);color: var(--muted); }
+
+    .mode-card p { font-size: 0.83rem; color: #94a3b8; margin-bottom: 10px; }
+
+    .mode-time {
+      font-size: 0.78rem;
+      color: var(--yellow);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* ── Tech stack ──────────────────────────────────────────────── */
+    .tech-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .tech-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 0.88rem;
+      font-weight: 500;
+    }
+
+    .tech-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ── Skills demonstrated ─────────────────────────────────────── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 14px;
+    }
+
+    .skill-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .skill-check {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: rgba(34,197,94,.15);
+      border: 1px solid rgba(34,197,94,.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      color: var(--green);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .skill-item p { font-size: 0.85rem; color: #cbd5e1; }
+
+    /* ── Output files ────────────────────────────────────────────── */
+    .output-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 14px;
+    }
+
+    .output-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .output-icon {
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .output-item h4 { font-size: 0.85rem; font-weight: 600; color: var(--accent); margin-bottom: 3px; }
+    .output-item p  { font-size: 0.8rem; color: #94a3b8; }
+
+    /* ── Architecture diagram ────────────────────────────────────── */
+    .arch-flow {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .arch-box {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 18px;
+      text-align: center;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #fff;
+      min-width: 110px;
+    }
+
+    .arch-box small { display: block; color: var(--muted); font-weight: 400; font-size: 0.72rem; margin-top: 3px; }
+
+    .arch-arrow {
+      color: var(--accent);
+      font-size: 1.1rem;
+      padding: 0 4px;
+    }
+
+    /* ── Footer ──────────────────────────────────────────────────── */
+    .footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 36px 0;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .footer strong { color: var(--accent); }
+
+    /* ── Responsive ──────────────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .hero-stats { gap: 24px; }
+      .arch-flow  { flex-direction: column; }
+      .arch-arrow { transform: rotate(90deg); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════ HERO ═══════════════════════════════════════ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">Cybersecurity Project &nbsp;·&nbsp; Penetration Testing Tool</div>
+
+    <h1>Stealth NMAP<br /><span>Automated Reconnaissance &amp; CVE Intelligence</span></h1>
+
+    <p class="hero-desc">
+      A full-stack Python penetration testing automation tool that orchestrates Nmap across
+      32+ scan types, correlates results against live CVE databases, generates prioritised
+      exploitation roadmaps, and renders BloodHound-style attack-path graphs — all from a
+      single CLI command.
+    </p>
+
+    <div class="hero-tags">
+      <span class="tag tag-blue">Python 3</span>
+      <span class="tag tag-red">Nmap / NSE</span>
+      <span class="tag tag-purple">CVE Intelligence</span>
+      <span class="tag tag-green">Parallel Execution</span>
+      <span class="tag tag-yellow">Stealth Evasion</span>
+      <span class="tag tag-blue">Searchsploit</span>
+      <span class="tag tag-purple">NetworkX / Plotly</span>
+      <span class="tag tag-red">NVD API</span>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat-item">
+        <span class="stat-num">32+</span>
+        <span class="stat-label">Scan Modules</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">11</span>
+        <span class="stat-label">Output Reports</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">4x</span>
+        <span class="stat-label">Parallel Threads</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">65 535</span>
+        <span class="stat-label">Max Port Coverage</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ OVERVIEW ═══════════════════════════════════ -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">What is <span>Stealth NMAP</span>?</h2>
+    <p class="section-sub">A production-grade CLI tool built for professional penetration testing and CTF competitions</p>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:32px; align-items:start;">
+
+      <div>
+        <p style="color:#94a3b8; margin-bottom:18px;">
+          Stealth NMAP wraps the power of Nmap and its NSE scripting engine inside an intelligent
+          Python orchestrator. Rather than running individual scans manually and stitching results
+          together, Stealth NMAP fires up to <strong style="color:#fff;">32 specialised scan types concurrently</strong>,
+          parses every output file, cross-references discovered service versions against the
+          <strong style="color:#fff;">NVD CVE database in real-time</strong>, and delivers a
+          single prioritised exploitation brief — ready to act on.
+        </p>
+        <p style="color:#94a3b8; margin-bottom:18px;">
+          A built-in <strong style="color:#fff;">stealth engine</strong> (T0 paranoid timing,
+          packet fragmentation, randomised decoy IPs, DNS source-port spoofing) lets the tool
+          operate against heavily monitored targets while maintaining full intelligence-gathering
+          capability.
+        </p>
+        <p style="color:#94a3b8;">
+          Results are visualised as an interactive <strong style="color:#fff;">BloodHound-style
+          attack-path graph</strong> (NetworkX + Plotly), colour-coded by risk level, so attack
+          chains are immediately obvious — even in large, complex environments.
+        </p>
+      </div>
+
+      <div class="terminal">
+        <div class="terminal-bar">
+          <div class="dot dot-red"></div>
+          <div class="dot dot-yellow"></div>
+          <div class="dot dot-green"></div>
+          <span class="terminal-title">Stealth NMAP — live output</span>
+        </div>
+        <div class="terminal-body">
+          <div><span class="t-prompt">root@kali:~# </span><span class="t-cmd">python3 nmap_enum_and_CVE.py</span></div>
+          <div style="padding-left:4px;"><span class="t-flag">  -t</span><span class="t-cmd"> 10.10.249.182</span></div>
+          <div style="padding-left:4px;"><span class="t-flag">  --fast</span></div>
+          <div style="padding-left:4px;"><span class="t-flag">  --parallel</span><span class="t-cmd"> 3</span></div>
+          <div style="padding-left:4px;"><span class="t-flag">  --open</span></div>
+          <div style="padding-left:4px;"><span class="t-flag">  --verbose</span></div>
+          <br/>
+          <div><span class="t-success">[SYSTEM ONLINE]</span><span class="t-output"> Initialising Stealth NMAP...</span></div>
+          <div><span class="t-success">[INFO]</span><span class="t-output"> Timing: -T5 | Ports: --top-ports 1000 | Threads: 3</span></div>
+          <div><span class="t-success">[1/32]</span><span class="t-output"> Host discovery completed in 1.24s</span></div>
+          <div><span class="t-success">[2/32]</span><span class="t-output"> TCP SYN scan — 8 open ports found</span></div>
+          <div><span class="t-success">[5/32]</span><span class="t-output"> Service detection — OpenSSH 7.4, Apache 2.4.6</span></div>
+          <div><span class="t-warn">[CVE]</span><span class="t-output"> Analysing 6 CVEs via NVD API...</span></div>
+          <div><span class="t-critical">[CRITICAL]</span><span class="t-output"> CVE-2017-0144 — Score: 9.3 (EternalBlue)</span></div>
+          <div><span class="t-success">[+]</span><span class="t-output"> Attack graph rendered → network_graph.html</span></div>
+          <div><span class="t-success">[+]</span><span class="t-output"> 11 report files written to nmap_outputs/</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ FEATURES ══════════════════════════════════ -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">Core <span>Feature Set</span></h2>
+    <p class="section-sub">Every component was designed and built from scratch</p>
+
+    <div class="feature-grid">
+
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>Multi-Threaded Scan Engine</h3>
+        <p>Up to 4 parallel Nmap instances using Python's <code style="color:var(--accent)">ThreadPoolExecutor</code>.
+          Reduces full-coverage scan time by up to 75% compared to sequential execution.
+          Smart conflict resolution automatically disables parallelism when stealth mode is active.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🛡️</div>
+        <h3>Stealth &amp; Evasion Engine</h3>
+        <p>T0 paranoid timing (5+ min between packets), packet fragmentation
+          (<code style="color:var(--accent)">-f --data-length 25</code>), 5 randomised decoy IPs
+          (<code style="color:var(--accent)">-D RND:5</code>), DNS source-port spoofing, and
+          SYN/NULL/FIN/ACK/Xmas multi-vector scanning. Designed to bypass IDS/firewall detection.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🔍</div>
+        <h3>Live CVE Intelligence</h3>
+        <p>Queries the <strong>NVD REST API v2.0</strong> for every discovered service version.
+          Fetches CVSS v3.1 scores, severity ratings, and attack vectors. Falls back through
+          multiple sources (CVEDetails, local pattern matching) if the primary API is unavailable.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🗺️</div>
+        <h3>Attack-Path Graph Visualisation</h3>
+        <p>Generates a BloodHound-style network graph using <strong>NetworkX</strong> and
+          <strong>Plotly</strong>. Nodes are colour-coded by risk (red = critical, yellow = medium),
+          edges represent exploitation paths and pivot opportunities. Exports as static PNG and
+          interactive HTML.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">💣</div>
+        <h3>Searchsploit Integration</h3>
+        <p>Automatically queries <strong>ExploitDB via Searchsploit</strong> for every detected
+          service version. Extracts exploit titles, file paths, and Metasploit module names.
+          Falls back to curated exploit-db.com/NVD search URLs when Searchsploit is unavailable.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🎯</div>
+        <h3>Intelligent Recommendations Engine</h3>
+        <p>Parses all scan results and generates a <strong>prioritised attack roadmap</strong>
+          — high/medium/low priority targets, service-specific exploitation methods, and
+          ready-to-paste tool commands (Hydra, SQLMap, WPScan, enum4linux, CrackMapExec, etc.).</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <h3>Full Port Coverage</h3>
+        <p>Scans all <strong>65 535 TCP ports</strong> with
+          <code style="color:var(--accent)">--top-ports 65535</code> (automatically converted
+          to <code style="color:var(--accent)">-p-</code>). Combined with
+          <code style="color:var(--accent)">--open</code> flag to suppress noise and surface
+          only accessible services — essential for uncovering non-standard ports.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🕸️</div>
+        <h3>NSE Script Library</h3>
+        <p>Orchestrates 15+ NSE scripts including
+          <code style="color:var(--accent)">ssl-heartbleed</code>,
+          <code style="color:var(--accent)">smb-vuln-ms17-010</code>,
+          <code style="color:var(--accent)">http-shellshock</code>,
+          <code style="color:var(--accent)">http-sql-injection</code>,
+          <code style="color:var(--accent)">rdp-enum-encryption</code>,
+          <code style="color:var(--accent)">dns-brute</code>, and full WordPress enumeration.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Structured Report Generation</h3>
+        <p>Automatically writes 11 categorised output files — raw scan data, CVE priority
+          rankings, service version inventory, attack recommendations, Searchsploit results,
+          and a full-colour HTML interactive graph — every run, with timestamped filenames.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ SCAN MODES ════════════════════════════════ -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">Scan <span>Modes</span></h2>
+    <p class="section-sub">Flexible configuration for every engagement scenario</p>
+
+    <div class="mode-grid">
+
+      <div class="mode-card">
+        <div class="mode-card-header">
+          <span class="mode-name">Standard</span>
+          <span class="badge badge-default">Default</span>
+        </div>
+        <p>32 comprehensive scans, T4 aggressive timing, full CVE analysis and attack
+          recommendations. Best for thorough assessments with no time pressure.</p>
+        <div class="mode-time">⏱ 45 – 90 minutes</div>
+      </div>
+
+      <div class="mode-card">
+        <div class="mode-card-header">
+          <span class="mode-name">Fast + Parallel</span>
+          <span class="badge badge-fast">Fast</span>
+        </div>
+        <p>T5 insane timing combined with up to 4 parallel scan threads. Cuts total time by
+          60 – 75%. Ideal for CTF competitions and time-constrained engagements.</p>
+        <div class="mode-time">⏱ 3 – 15 minutes</div>
+      </div>
+
+      <div class="mode-card">
+        <div class="mode-card-header">
+          <span class="mode-name">Quick</span>
+          <span class="badge badge-fast">Recon</span>
+        </div>
+        <p>Six essential scans only — host discovery, port scan, service detection, OS
+          fingerprint, WordPress enumeration, and vulnerability check.</p>
+        <div class="mode-time">⏱ 5 – 10 minutes</div>
+      </div>
+
+      <div class="mode-card">
+        <div class="mode-card-header">
+          <span class="mode-name">All Ports</span>
+          <span class="badge badge-full">Full</span>
+        </div>
+        <p>Scans all 65 535 TCP ports with
+          <code style="color:var(--accent); font-size:0.8rem">--top-ports 65535</code> combined
+          with <code style="color:var(--accent); font-size:0.8rem">--open</code> for noise-free
+          results. Catches services running on non-standard ports.</p>
+        <div class="mode-time">⏱ 5 – 20 minutes (with --fast)</div>
+      </div>
+
+      <div class="mode-card">
+        <div class="mode-card-header">
+          <span class="mode-name">Stealth</span>
+          <span class="badge badge-stealth">Evasion</span>
+        </div>
+        <p>T0 paranoid timing, packet fragmentation, decoy IPs, and DNS port spoofing.
+          Automatically disables conflicting speed settings. Designed to evade IDS/SIEM
+          detection on heavily monitored corporate networks.</p>
+        <div class="mode-time">⏱ 2 – 6 hours</div>
+      </div>
+
+      <div class="mode-card">
+        <div class="mode-card-header">
+          <span class="mode-name">Combined</span>
+          <span class="badge badge-fast">Custom</span>
+        </div>
+        <p>All flags are composable.
+          <code style="color:var(--accent); font-size:0.78rem">--fast --parallel 3 --quick --open --skip-ping</code>
+          gives a sub-5-minute initial reconnaissance sweep with clean, focused output.</p>
+        <div class="mode-time">⏱ Fully configurable</div>
+      </div>
+
+    </div>
+
+    <!-- Usage terminal -->
+    <div class="terminal" style="margin-top:32px;">
+      <div class="terminal-bar">
+        <div class="dot dot-red"></div>
+        <div class="dot dot-yellow"></div>
+        <div class="dot dot-green"></div>
+        <span class="terminal-title">Usage examples</span>
+      </div>
+      <div class="terminal-body">
+        <div><span class="t-comment"># Fastest possible initial scan</span></div>
+        <div><span class="t-prompt">$ </span><span class="t-cmd">python3 nmap_enum_and_CVE.py</span><span class="t-flag"> -t</span><span class="t-cmd"> 10.10.249.182</span><span class="t-flag"> --fast --parallel 3 --quick --open --skip-ping</span></div>
+        <br/>
+        <div><span class="t-comment"># Comprehensive all-port scan</span></div>
+        <div><span class="t-prompt">$ </span><span class="t-cmd">python3 nmap_enum_and_CVE.py</span><span class="t-flag"> -t</span><span class="t-cmd"> 10.10.249.182</span><span class="t-flag"> --top-ports 65535 --fast --parallel 3 --open</span></div>
+        <br/>
+        <div><span class="t-comment"># Stealth recon against monitored corporate target</span></div>
+        <div><span class="t-prompt">$ </span><span class="t-cmd">python3 nmap_enum_and_CVE.py</span><span class="t-flag"> -t</span><span class="t-cmd"> 10.129.29.203</span><span class="t-flag"> --stealth --verbose</span></div>
+        <br/>
+        <div><span class="t-comment"># Full assessment with custom output directory</span></div>
+        <div><span class="t-prompt">$ </span><span class="t-cmd">python3 nmap_enum_and_CVE.py</span><span class="t-flag"> -t</span><span class="t-cmd"> 192.168.1.100</span><span class="t-flag"> --parallel 2 --open -o</span><span class="t-cmd"> /tmp/client_audit</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ ARCHITECTURE ══════════════════════════════ -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">How It <span>Works</span></h2>
+    <p class="section-sub">Pipeline architecture from target input to actionable intelligence</p>
+
+    <div class="arch-flow" style="margin-bottom:40px;">
+      <div class="arch-box">Target Input<small>IP / domain</small></div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box">Scan Engine<small>32 Nmap tasks</small></div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box">Result Parser<small>regex + grep</small></div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box">CVE Engine<small>NVD API v2</small></div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box">Exploit Lookup<small>Searchsploit</small></div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box">Graph Builder<small>NetworkX</small></div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box">Reports<small>11 files</small></div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+      <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:24px;">
+        <h3 style="font-size:0.95rem; color:#fff; margin-bottom:14px;">⚙️ Concurrency Model</h3>
+        <p style="font-size:0.85rem; color:#94a3b8;">
+          Uses <code style="color:var(--accent)">concurrent.futures.ThreadPoolExecutor</code> to
+          dispatch up to 4 Nmap subprocesses simultaneously. Each scan writes its own
+          grepable output file. The main thread collects results via
+          <code style="color:var(--accent)">as_completed()</code> as they finish, then merges
+          findings before the analysis phase begins.
+        </p>
+      </div>
+      <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:24px;">
+        <h3 style="font-size:0.95rem; color:#fff; margin-bottom:14px;">🌐 CVE Data Pipeline</h3>
+        <p style="font-size:0.85rem; color:#94a3b8;">
+          Detected service versions are passed to a CVE enrichment function that queries the
+          <code style="color:var(--accent)">NVD REST API v2.0</code>, parses CVSS v3.1/v3.0/v2.0
+          scores, and falls back to CVEDetails scraping and local pattern-matching for known
+          critical CVEs (EternalBlue, Log4Shell, BlueKeep, Zerologon, Shellshock, Heartbleed).
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ OUTPUT FILES ══════════════════════════════ -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">Generated <span>Output Files</span></h2>
+    <p class="section-sub">Every run produces a complete, audit-ready intelligence package</p>
+
+    <div class="output-list">
+      <div class="output-item">
+        <div class="output-icon">📄</div>
+        <div>
+          <h4>scan_XX_TIMESTAMP.txt</h4>
+          <p>Raw grepable Nmap output for each individual scan module. One file per scan type.</p>
+        </div>
+      </div>
+      <div class="output-item">
+        <div class="output-icon">⚠️</div>
+        <div>
+          <h4>important_findings_TIMESTAMP.txt</h4>
+          <p>Highlighted critical vulnerabilities and key findings extracted from all scans.</p>
+        </div>
+      </div>
+      <div class="output-item">
+        <div class="output-icon">🏆</div>
+        <div>
+          <h4>cve_priority_analysis_TIMESTAMP.txt</h4>
+          <p>CVEs ranked by CVSS score with exploitation priority, attack vectors, and Metasploit commands.</p>
+        </div>
+      </div>
+      <div class="output-item">
+        <div class="output-icon">🔧</div>
+        <div>
+          <h4>attack_recommendations_TIMESTAMP.txt</h4>
+          <p>Prioritised attack roadmap with ready-to-use tool commands for each discovered service.</p>
+        </div>
+      </div>
+      <div class="output-item">
+        <div class="output-icon">💣</div>
+        <div>
+          <h4>searchsploit_results_TIMESTAMP.txt</h4>
+          <p>Automated ExploitDB results with exploit file paths and Metasploit module references.</p>
+        </div>
+      </div>
+      <div class="output-item">
+        <div class="output-icon">📊</div>
+        <div>
+          <h4>network_attack_graph_TIMESTAMP.png/.html</h4>
+          <p>BloodHound-style risk graph. Static PNG + interactive Plotly HTML with zoom and hover details.</p>
+        </div>
+      </div>
+      <div class="output-item">
+        <div class="output-icon">🖥️</div>
+        <div>
+          <h4>versions_detected_TIMESTAMP.txt</h4>
+          <p>Structured table of all detected service versions mapped to port numbers.</p>
+        </div>
+      </div>
+      <div class="output-item">
+        <div class="output-icon">📋</div>
+        <div>
+          <h4>full_report_TIMESTAMP.txt</h4>
+          <p>Complete Nmap normal-format report covering all scans in a single consolidated document.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ TECH STACK ════════════════════════════════ -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">Tech <span>Stack</span></h2>
+    <p class="section-sub">Languages, libraries, and tools used in this project</p>
+
+    <div class="tech-list">
+      <div class="tech-item"><div class="tech-dot" style="background:#3b82f6;"></div> Python 3</div>
+      <div class="tech-item"><div class="tech-dot" style="background:#ef4444;"></div> Nmap 7.x</div>
+      <div class="tech-item"><div class="tech-dot" style="background:#8b5cf6;"></div> NSE (Nmap Scripting Engine)</div>
+      <div class="tech-item"><div class="tech-dot" style="background:#06b6d4;"></div> NVD REST API v2.0</div>
+      <div class="tech-item"><div class="tech-dot" style="background:#22c55e;"></div> NetworkX</div>
+      <div class="tech-item"><div class="tech-dot" style="background:#f59e0b;"></div> Matplotlib</div>
+      <div class="tech-item"><div class="tech-dot" style="background:#ec4899;"></div> Plotly</div>
+      <div class="tech-item"><div class="tech-dot" style="background:#64748b;"></div> Searchsploit / ExploitDB</div>
+      <div class="tech-item"><div class="tech-dot" style="background:#f97316;"></div> Colorama</div>
+      <div class="tech-item"><div class="tech-dot" style="background:#06b6d4;"></div> Requests (HTTP)</div>
+      <div class="tech-item"><div class="tech-dot" style="background:#8b5cf6;"></div> concurrent.futures</div>
+      <div class="tech-item"><div class="tech-dot" style="background:#22c55e;"></div> subprocess / argparse / re</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ SKILLS ════════════════════════════════════ -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">Skills <span>Demonstrated</span></h2>
+    <p class="section-sub">Technical competencies showcased through building this tool</p>
+
+    <div class="skills-grid">
+      <div class="skill-item">
+        <div class="skill-check">✓</div>
+        <p><strong style="color:#fff;">Python automation</strong> — CLI tool design with argparse, subprocess orchestration, regex parsing, and file I/O at scale</p>
+      </div>
+      <div class="skill-item">
+        <div class="skill-check">✓</div>
+        <p><strong style="color:#fff;">Penetration testing methodology</strong> — enumeration, vulnerability identification, exploit chaining, and prioritised attack planning</p>
+      </div>
+      <div class="skill-item">
+        <div class="skill-check">✓</div>
+        <p><strong style="color:#fff;">Concurrent programming</strong> — ThreadPoolExecutor, thread-safe file writes, race condition avoidance, dynamic worker scaling</p>
+      </div>
+      <div class="skill-item">
+        <div class="skill-check">✓</div>
+        <p><strong style="color:#fff;">REST API integration</strong> — NVD CVE API v2.0 with multi-tier fallback, rate limiting, JSON parsing, and error handling</p>
+      </div>
+      <div class="skill-item">
+        <div class="skill-check">✓</div>
+        <p><strong style="color:#fff;">Network security knowledge</strong> — TCP/IP, port scanning techniques (SYN, NULL, FIN, Xmas, ACK), IDS/IPS evasion strategies</p>
+      </div>
+      <div class="skill-item">
+        <div class="skill-check">✓</div>
+        <p><strong style="color:#fff;">Data visualisation</strong> — graph theory with NetworkX, risk-scored node classification, interactive Plotly attack-path diagrams</p>
+      </div>
+      <div class="skill-item">
+        <div class="skill-check">✓</div>
+        <p><strong style="color:#fff;">Security tooling integration</strong> — Searchsploit/ExploitDB automation, Metasploit module lookup, CVE-to-exploit correlation</p>
+      </div>
+      <div class="skill-item">
+        <div class="skill-check">✓</div>
+        <p><strong style="color:#fff;">Software engineering</strong> — modular architecture, graceful degradation for optional dependencies, cross-platform CLI design</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ DISCLAIMER ════════════════════════════════ -->
+<section class="section">
+  <div class="container">
+    <div style="background:rgba(245,158,11,.06); border:1px solid rgba(245,158,11,.25); border-radius:var(--radius); padding:28px;">
+      <h3 style="color:var(--yellow); font-size:0.95rem; margin-bottom:10px;">⚠️ Legal &amp; Ethical Use</h3>
+      <p style="color:#94a3b8; font-size:0.88rem; line-height:1.7;">
+        This tool was built for <strong style="color:#fff;">authorised penetration testing, security research, and educational purposes</strong>.
+        It must only be used against targets for which you have explicit written permission.
+        Unauthorised network scanning is illegal in most jurisdictions. The author is not
+        responsible for misuse of this software. Always follow responsible disclosure practices
+        and applicable laws.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ FOOTER ════════════════════════════════════ -->
+<footer class="footer">
+  <div class="container">
+    <p style="margin-bottom:6px;">
+      <strong>Stealth NMAP</strong> — Automated Penetration Testing &amp; CVE Intelligence Tool
+    </p>
+    <p>Built with Python 3 &nbsp;·&nbsp; Nmap / NSE &nbsp;·&nbsp; NVD API &nbsp;·&nbsp; Searchsploit &nbsp;·&nbsp; NetworkX / Plotly</p>
+  </div>
+</footer>
+
+</body>
+</html>
